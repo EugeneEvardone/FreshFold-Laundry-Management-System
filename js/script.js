@@ -74,25 +74,40 @@ loginForm.addEventListener("submit", async function (e) {
     const originalText = loginBtn.textContent;
     loginBtn.textContent = "Logging in...";
 
-    const result = await loginWithUsername(user, pass);
+    // Wrapped in try/catch so that if something throws (bad URL,
+    // bad key, network issue, script load order problem, etc.) the
+    // button doesn't get stuck forever on "Logging in..." - the user
+    // sees an actual error instead.
+    try {
 
-    loginBtn.disabled = false;
-    loginBtn.textContent = originalText;
+        const result = await loginWithUsername(user, pass);
 
-    if (result.error) {
-        passwordError.textContent = "Invalid username or password.";
-        return;
+        if (result.error) {
+            passwordError.textContent = "Invalid username or password.";
+            return;
+        }
+
+        // Check if this account needs to set a new password before
+        // going any further (must_change_password flag from profiles table).
+        const profileResult = await getMyProfile();
+
+        if (profileResult.profile && profileResult.profile.must_change_password) {
+            window.location.href = "change-password.html";
+            return;
+        }
+
+        window.location.href = "dashboard.html";
+
+    } catch (err) {
+
+        console.error("Login failed:", err);
+        passwordError.textContent = "Something went wrong: " + err.message;
+
+    } finally {
+
+        loginBtn.disabled = false;
+        loginBtn.textContent = originalText;
+
     }
-
-    // Check if this account needs to set a new password before
-    // going any further (must_change_password flag from profiles table).
-    const profileResult = await getMyProfile();
-
-    if (profileResult.profile && profileResult.profile.must_change_password) {
-        window.location.href = "change-password.html";
-        return;
-    }
-
-    window.location.href = "dashboard.html";
 
 });
