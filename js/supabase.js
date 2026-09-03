@@ -10,7 +10,7 @@
 // Load the Supabase JS library from CDN in your HTML BEFORE this file:
 // <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-const SUPABASE_URL = "https://ezrdhlxwjaibpwkajtxp.supabase.co/rest/v1/"; // e.g. https://xxxxx.supabase.co
+const SUPABASE_URL = "https://ezrdhlxwjaibpwkajtxp.supabase.co"; // e.g. https://xxxxx.supabase.co
 const SUPABASE_ANON_KEY = "sb_publishable_-6T-u3HUYJKEmATeJOUJVQ_e2EZmsfk";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
